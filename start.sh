@@ -92,6 +92,7 @@ function addWebsite {
 	domain=$(\
 		dialog 	--backtitle "Hosted4u - Manager" --title " Add Websites "\
 				--inputbox "Type in your Domain (example: hosted4u.de)" 8 40 \
+				--cancel-label "Back"\
 		3>&1 1>&2 2>&3 3>&- \
 	)
 
@@ -102,19 +103,19 @@ function addWebsite {
     mkdir "/var/www/vhost/$domain/"
     formatted=$(echo "$domain" | sed -r 's/\.//g')
 
-    cp /configs/pool.default /etc/php/7.0/fpm/pool.d/"$formatted".conf
+    cp configs/pool.default /etc/php/7.0/fpm/pool.d/"$formatted".conf
     sed -i "s/%DOMAIN%/$formatted/g" /etc/php/7.0/fpm/pool.d/"$formatted".conf
 
     pw=$(head /dev/urandom | tr -dc A-Za-z0-9 | head -c 15 ; echo '')
     useradd www-"$formatted" --home-dir "/var/www/vhost/$domain/" --no-create-home --shell /bin/nologin --password "$pw" --groups www-data
 
-    cp /configs/nginx-sites.default /etc/nginx/sites-enabled/"$domain"
+    cp configs/nginx-sites.default /etc/nginx/sites-enabled/"$domain"
     sed -i "s/%DOMAIN%/$domain/g" /etc/nginx/sites-enabled/"$domain"
     sed -i "s/%FORMATTED%/$formatted/g" /etc/nginx/sites-enabled/"$domain"
 
     chown -R www-"$formatted":www-data "/var/www/vhost/$domain/"
 
-    /root/certbot-auto certonly --webroot -w /var/www/letsencrypt/ -d  "%DOMAIN%" -d "www.%DOMAIN%"
+    /root/certbot-auto certonly --webroot -w /var/www/letsencrypt/ -d  "%DOMAIN%" -d www."%DOMAIN%"
 
     service php7.0-fpm reload
     service nginx reload
