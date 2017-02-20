@@ -1,0 +1,30 @@
+server {
+	server_name %DOMAIN% *.%DOMAIN%;
+
+	listen 443 ssl http2;
+	listen [::]:443 ssl http2;
+
+	root /var/www/vhost/%DOMAIN%;
+	index index.php index.html;
+
+	ssl_certificate /etc/letsencrypt/live/%DOMAIN%/fullchain.pem;
+	ssl_certificate_key /etc/letsencrypt/live/%DOMAIN%/privkey.pem;
+	ssl_trusted_certificate /etc/letsencrypt/live/%DOMAIN%/fullchain.pem;
+
+	add_header Strict-Transport-Security "max-age=31536000; includeSubdomains;";
+
+	location / {
+		try_files $uri $uri/ =404;
+	}
+
+
+	location ~ (?U)\.php(/.*$|$) {
+		fastcgi_split_path_info ^(.+?\.php)(/.*)$;
+		fastcgi_pass    unix:/var/run/php/php7.0-%FORMATTED%.sock;
+		fastcgi_index   index.php;
+		fastcgi_param DOCUMENT_ROOT $document_root;
+		include fastcgi_params;
+	}
+
+	client_max_body_size 1024m;
+}

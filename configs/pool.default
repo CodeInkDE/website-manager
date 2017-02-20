@@ -1,0 +1,20 @@
+[%DOMAIN%]
+
+user = www-%DOMAIN%
+group = www-%DOMAIN%
+
+listen = /run/php/php7.0-%DOMAIN%.sock
+
+listen.owner = www-data
+listen.group = www-data
+;listen.mode = 0660
+
+pm = dynamic
+pm.max_children = 4
+pm.start_servers = 2
+pm.min_spare_servers = 2
+pm.max_spare_servers = 4
+;pm.max_requests = 500
+;pm.status_path = /status
+;access.log = log/$pool.access.log
+;chdir = /var/www
