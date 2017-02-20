@@ -186,12 +186,51 @@ function deleteWebsite {
 
 
 function manageWebsite {
+
+    formatted=$(echo "$website" | sed -r 's/\.//g')
+
+    if [ -f "/etc/php/7.0/fpm/pool.d/$formatted.conf" ]; then
+        php="[ Activated ]"
+    else
+        php="[ Dectivated ]"
+    fi
+
+
     dialog --backtitle "Hosted4u - Manager" --title " Manage Website - $website"\
         --cancel-label "Back" \
         --menu "Move using [UP] [Down], [Enter] to select" 17 60 10\
-        delete "Delete Website"\
+        php "$php"\
+        changePW "Reset password" \
+        delete "Delete website"\
         back "Back" 2>$_tmp
+
+    menuitem=`cat $_tmp`
+    #echo "menu=$menuitem"
+    case $menuitem in
+        php) manageWebsites;;
+        changePW) changePW "www-$formatted";;
+        delete) deleteWebsite "$website";;
+        quit) rm $_tmp; exit 0;;
+    esac
+
 }
+
+function changePW {
+    user=${@}
+    pw=$(head /dev/urandom | tr -dc A-Za-z0-9 | head -c 15 ; echo '')
+
+    echo "$user:$pw"|chpasswd
+
+    clear
+
+    echo "**************************"
+    echo "User: $user"
+    echo "Password: $pw"
+    echo "**************************"
+
+    exit 0
+}
+
 
 function main_menu {
     dialog --backtitle "Hosted4u - Manager" --title " Main Menu - v$VER"\
