@@ -89,10 +89,10 @@ fi
 }
 
 function addWebsite {
-	domain=$(\
-		dialog 	--backtitle "Hosted4u - Manager" --title " Add Websites "\
-				--inputbox "Type in your Domain (example: hosted4u.de)" 8 40 \
-				--cancel-label "Back"\
+	domain=$( \
+		dialog  --title "Add Websites" \
+				--cancel-label "Cancel" \
+			    --inputbox "Type in your Domain (example: hosted4u.de)" 8 40 \
 		3>&1 1>&2 2>&3 3>&- \
 	)
 
