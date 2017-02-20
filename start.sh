@@ -120,7 +120,7 @@ function addWebsite {
 
     chown -R www-"$formatted":www-data "/var/www/vhost/$domain/"
 
-    /root/certbot-auto certonly --webroot -w /var/www/letsencrypt/ -d  "%DOMAIN%" -d www."%DOMAIN%"
+    /root/certbot-auto certonly --webroot -w /var/www/letsencrypt/ -d  "%$domain%" -d www."%$domain%"
 
     service php7.0-fpm reload
     service nginx reload
