@@ -96,12 +96,12 @@ function addWebsite {
 		3>&1 1>&2 2>&3 3>&- \
 	)
 
-    if [$domain == ""]; then
+    if [ -z "$domain" ]; then
         addWebsite
         exit 0
     fi
 
-	if [ -d "/var/www/vhost/" domain "/" ]; then
+	if [ -d "/var/www/vhost/$domain/" ]; then
         errorExit "Domain already exits!"
     fi
 
