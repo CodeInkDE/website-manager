@@ -159,6 +159,7 @@ function deleteWebsite {
     fi
 
     tar cfz backups/$domain.tar.gz "/var/www/vhost/$domain/"
+    rm -R "/var/www/vhost/$domain"
 
     formatted=$(echo "$domain" | sed -r 's/\.//g')
 
