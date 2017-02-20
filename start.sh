@@ -138,6 +138,53 @@ function addWebsite {
     exit 0
 }
 
+function deleteWebsite {
+    domain=${@}
+
+    dialog --title "Delete Website" --yesno "Remove $domain ?" 8 40
+    response=$?
+
+    if [ $response = 1 ]; then
+        manageWebsites
+        exit 0
+    fi
+
+
+    if [ -z "$domain" ]; then
+        errorExit "No parameter!"
+    fi
+
+	if ! [ -d "/var/www/vhost/$domain/" ]; then
+        errorExit "Website doesn't exists!"
+    fi
+
+    tar cfz backups/$domain.tar.gz "/var/www/vhost/$domain/"
+
+    formatted=$(echo "$domain" | sed -r 's/\.//g')
+
+    rm /etc/php/7.0/fpm/pool.d/"$formatted".conf
+    rm /etc/nginx/sites-enabled/"$domain"
+    rm -rf "/etc/letsencrypt/live/$domain"
+    rm "/etc/letsencrypt/renewal/$domain.conf"
+
+    service php7.0-fpm reload
+    service nginx reload
+    deluser www-"$formatted"
+
+    clear
+
+    echo "**************************"
+    echo "Domain: $domain"
+    echo "Status: DELETED"
+    echo "Backup: backups/$domain.tar.gz"
+    echo "**************************"
+
+    exit 0
+}
+
+
+
+
 function manageWebsite {
     dialog --backtitle "Hosted4u - Manager" --title " Manage Website - $website"\
         --cancel-label "Back" \
