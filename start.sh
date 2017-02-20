@@ -118,12 +118,24 @@ function addWebsite {
     sed -i "s/%DOMAIN%/$domain/g" /etc/nginx/sites-enabled/"$domain"
     sed -i "s/%FORMATTED%/$formatted/g" /etc/nginx/sites-enabled/"$domain"
 
-    chown -R www-"$formatted":www-data "/var/www/vhost/$domain/"
-
     /root/certbot-auto certonly --webroot -w /var/www/letsencrypt/ -d  "$domain" -d www."$domain"
 
     service php7.0-fpm reload
     service nginx reload
+
+    cp configs/index.html "/var/www/vhost/$domain/index.html"
+    sed -i "s/%DOMAIN%/$domain/g" "/var/www/vhost/$domain/index.html"
+    chown -R www-"$formatted":www-data "/var/www/vhost/$domain/"
+
+    clear
+
+    echo "**************************"
+    echo "Domain: $domain"
+    echo "User: www-$formatted"
+    echo "Password: $pw"
+    echo "**************************"
+
+    exit 0
 }
 
 function manageWebsite {
