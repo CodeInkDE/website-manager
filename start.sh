@@ -31,7 +31,7 @@ function yellowMessage {
 
 function errorExit {
     redMessage ${@}
-    exit 0
+    exit 1
 }
 
 function installdialog {
@@ -64,37 +64,58 @@ if [ "`id -u`" != "0" ]; then
 }
 
 function manageWebsites {
-
-liste="$(ls -G /var/www/vhost)"
+domains=""
+list="$(ls -G /var/www/vhost)"
 leer="-->"
 
-for d in $liste
+for d in $list
 do
   domains="$domains $d $leer "
 done
 
-dialog  --backtitle "Test" --title " Test " --menu "Test" 17 60 10 $domains
+domains="$domains add $leer"
 
+dialog --backtitle "Hosted4u - Manager" --title " Manage Websites " --cancel-label "Back" --menu "Move using [UP] [Down], [Enter] to select" 17 60 10 $domains 2>$_tmp
+#echo "$website"
+website=`cat $_tmp`
+if [[ $website != "add" && $website != "Back" ]]; then
+    manageWebsite
+else if [[ $website == "add" ]]; then
+    addWebsite
+else
+    manageWebsites
+fi
+fi
+}
+
+function addWebsite {
+    echo ""
+}
+
+function manageWebsite {
+    dialog --backtitle "Hosted4u - Manager" --title " Manage Website - $website"\
+        --cancel-label "Back" \
+        --menu "Move using [UP] [Down], [Enter] to select" 17 60 10\
+        delete "Delete Website"\
+        back "Back" 2>$_tmp
 }
 
 function main_menu {
     dialog --backtitle "Hosted4u - Manager" --title " Main Menu - v$VER"\
         --cancel-label "Quit" \
         --menu "Move using [UP] [Down], [Enter] to select" 17 60 10\
-        manageWebsites "Manage Websites"
+        manageWebsites "Manage Websites"\
         quit "Exit Manager" 2>$_tmp
 
     opt=${?}
     if [ $opt != 0 ]; then rm $_tmp; exit; fi;
     menuitem=`cat $_tmp`
-    echo "menu=$menuitem"
+    #echo "menu=$menuitem"
     case $menuitem in
         manageWebsites) manageWebsites;;
-        quit) rm $_tmp; exit;;
+        quit) rm $_tmp; exit 0;;
     esac
 }
-
-
 
 ##
 #
