@@ -118,7 +118,7 @@ function addWebsite {
     sed -i "s/%DOMAIN%/$domain/g" /etc/nginx/sites-enabled/"$domain"
     sed -i "s/%FORMATTED%/$formatted/g" /etc/nginx/sites-enabled/"$domain"
 
-    /root/certbot-auto certonly --webroot -w /var/www/letsencrypt/ -d  "$domain" -d www."$domain"
+    /root/certbot-auto certonly --webroot -w /var/www/letsencrypt/ -d  "$domain"
 
     service php7.0-fpm reload
     service nginx reload
