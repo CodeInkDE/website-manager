@@ -9,7 +9,7 @@ server {
         }
 		
 		location /.well-known/ {
-			root /var/www/letsencrypt/.well-known;
+			root /var/www/letsencrypt/;
 		}
 }
 
@@ -50,7 +50,7 @@ server {
 	}
 	
 	location /.well-known/ {
-		root /var/www/letsencrypt/.well-known;
+		root /var/www/letsencrypt/;
 	}
 
 	location ~ (?U)\.php(/.*$|$) {
