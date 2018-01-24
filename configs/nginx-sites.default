@@ -7,6 +7,10 @@ server {
         location / {
                 return  301 https://$server_name$request_uri;
         }
+		
+		location /.well-known/ {
+			root /var/www/letsencrypt/.well-known;
+		}
 }
 
 #HTTPS
@@ -44,7 +48,10 @@ server {
 	location / {
 		try_files $uri $uri/ =404;
 	}
-
+	
+	location /.well-known/ {
+		root /var/www/letsencrypt/.well-known;
+	}
 
 	location ~ (?U)\.php(/.*$|$) {
 		fastcgi_split_path_info ^(.+?\.php)(/.*)$;
