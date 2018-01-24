@@ -8,9 +8,9 @@ server {
                 return  301 https://$server_name$request_uri;
         }
 		
-		location /.well-known/ {
+		location ~ /.well-known {
 			default_type "text/plain";
-			root /var/www/letsencrypt/;
+			root /var/www/letsencrypt;
 			try_files $uri =404;
 		}
 }
@@ -51,9 +51,9 @@ server {
 		try_files $uri $uri/ =404;
 	}
 	
-	location /.well-known/ {
+	location ~ /.well-known {
 		default_type "text/plain";
-		root /var/www/letsencrypt/;
+		root /var/www/letsencrypt;
 		try_files $uri =404;
 	}
 
