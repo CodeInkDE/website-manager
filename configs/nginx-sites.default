@@ -9,7 +9,9 @@ server {
         }
 		
 		location /.well-known/ {
+			default_type "text/plain";
 			root /var/www/letsencrypt/;
+			try_files $uri =404;
 		}
 }
 
@@ -50,7 +52,9 @@ server {
 	}
 	
 	location /.well-known/ {
+		default_type "text/plain";
 		root /var/www/letsencrypt/;
+		try_files $uri =404;
 	}
 
 	location ~ (?U)\.php(/.*$|$) {
