@@ -1,63 +1,67 @@
 #HTTP
 server {
-        listen 80;
-        listen [::]:80;
-        server_name %DOMAIN%;
+    listen 80;
+    listen [::]:80;
+    server_name %DOMAIN% www.%DOMAIN%;
 
-        location / {
-                return  301 https://$server_name$request_uri;
-        }
-		
-		location ~ /.well-known {
-			default_type "text/plain";
-			root /var/www/letsencrypt;
-			try_files $uri =404;
-		}
+    location / {
+        return  301 https://$server_name$request_uri;
+    }
+
+    location ~ /.well-known {
+        default_type "text/plain";
+        root /var/www/letsencrypt;
+        try_files $uri =404;
+    }
 }
 
 #HTTPS
 server {
-	server_name %DOMAIN%;
+    listen 443 ssl http2;
+    listen [::]:443 ssl http2;
+    server_name %DOMAIN% www.%DOMAIN%;
 
-	listen 443 ssl http2;
-	listen [::]:443 ssl http2;
+    root /var/www/vhost/%DOMAIN%;
+    index index.php index.html;
 
-	root /var/www/vhost/%DOMAIN%;
-	index index.php index.html;
+    ssl_certificate /etc/letsencrypt/live/%DOMAIN%/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/%DOMAIN%/privkey.pem;
+    ssl_trusted_certificate /etc/letsencrypt/live/%DOMAIN%/fullchain.pem;
 
-	ssl_certificate /etc/letsencrypt/live/%DOMAIN%/fullchain.pem;
-	ssl_certificate_key /etc/letsencrypt/live/%DOMAIN%/privkey.pem;
-	ssl_trusted_certificate /etc/letsencrypt/live/%DOMAIN%/fullchain.pem;
+    add_header Strict-Transport-Security "max-age=63072000; includeSubDomains; preload";
+    add_header X-Content-Type-Options nosniff;
+    add_header X-XSS-Protection "1; mode=block";
+    add_header X-Frame-Options "SAMEORIGIN";
+    add_header 'Referrer-Policy' 'origin';
 
-	add_header Strict-Transport-Security "max-age=63072000; includeSubDomains; preload";
-	add_header X-Content-Type-Options nosniff;
-	add_header X-XSS-Protection "1; mode=block";
-	add_header X-Frame-Options "SAMEORIGIN";
-	add_header 'Referrer-Policy' 'origin';
-	
-	ssl_protocols TLSv1.2;
-	ssl_prefer_server_ciphers on;
-	ssl_ciphers 'kEECDH+ECDSA+AES128 kEECDH+ECDSA+AES256 kEECDH+AES128 kEECDH+AES256 kEDH+AES128 kEDH+AES256 DES-CBC3-SHA +SHA !aNULL !eNULL !LOW !kECDH !DSS !MD5 !EXP !PSK !SRP !CAMELLIA !SEED';
-	ssl_ecdh_curve secp384r1;
-	ssl_dhparam /etc/nginx/ssl/dhparam2048.pem;
-	ssl_stapling on;
-	ssl_stapling_verify on;
-	ssl_session_cache builtin:1000 shared:SSL:10m;
-	resolver 8.8.8.8 8.8.4.4 valid=300s;
-	resolver_timeout 5s;
+    ssl_protocols TLSv1.2;
+    ssl_prefer_server_ciphers on;
+    ssl_ciphers 'kEECDH+ECDSA+AES128 kEECDH+ECDSA+AES256 kEECDH+AES128 kEECDH+AES256 kEDH+AES128 kEDH+AES256 DES-CBC3-SHA +SHA !aNULL !eNULL !LOW !kECDH !DSS !MD5 !EXP !PSK !SRP !CAMELLIA !SEED';
+    ssl_ecdh_curve secp384r1;
+    ssl_dhparam /etc/nginx/ssl/dhparam2048.pem;
+    ssl_stapling on;
+    ssl_stapling_verify on;
+    ssl_session_cache builtin:1000 shared:SSL:10m;
+    resolver 8.8.8.8 8.8.4.4 valid=300s;
+    resolver_timeout 5s;
 
+    location / {
+        try_files $uri $uri/ =404;
+    }
 
-	location / {
-		try_files $uri $uri/ =404;
-	}
+    location ~ (?U)\.php(/.*$|$) {
+        fastcgi_split_path_info ^(.+?\.php)(/.*)$;
+        if (!-f $document_root$fastcgi_script_name) {
+            return 404;
+        }
+        fastcgi_pass    unix:/var/run/php/php7.0-%FORMATTED%.sock;
+        fastcgi_index   index.php;
+        fastcgi_param DOCUMENT_ROOT $document_root;
+        include fastcgi_params;
+    }
 
-	location ~ (?U)\.php(/.*$|$) {
-		fastcgi_split_path_info ^(.+?\.php)(/.*)$;
-		fastcgi_pass    unix:/var/run/php/php7.0-%FORMATTED%.sock;
-		fastcgi_index   index.php;
-		fastcgi_param DOCUMENT_ROOT $document_root;
-		include fastcgi_params;
-	}
-
-	client_max_body_size 1024m;
+    client_max_body_size 1024m;
+    if ($http_user_agent = "") { return 429; }
+    if ($http_user_agent ~* "WordPress(.*)") { return 429; }
+    if ($http_user_agent ~* "facebookexternalhit/1.1(.*)") { return 429; }
 }
