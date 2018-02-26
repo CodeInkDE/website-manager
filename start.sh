@@ -1,8 +1,8 @@
 #!/bin/bash
 
-VER='1.0.0'
+VER='1.1.0'
 _tmp="/tmp/answer.$$"
-
+TITLE="CodeInk - Manager"
 ##
 #
 # Functions
@@ -75,7 +75,7 @@ done
 
 domains="$domains add $leer"
 
-dialog --backtitle "Hosted4u - Manager" --title " Manage Websites " --cancel-label "Back" --menu "Move using [UP] [Down], [Enter] to select" 17 60 10 $domains 2>$_tmp
+dialog --backtitle "$TITLE" --title " Manage Websites " --cancel-label "Back" --menu "Move using [UP] [Down], [Enter] to select" 17 60 10 $domains 2>$_tmp
 #echo "$website"
 website=`cat $_tmp`
 if [[ $website != "add" && $website != "Back" ]]; then
@@ -197,7 +197,7 @@ function manageWebsite {
     fi
 
 
-    dialog --backtitle "Hosted4u - Manager" --title " Manage Website - $website"\
+    dialog --backtitle "$TITLE" --title " Manage Website - $website"\
         --cancel-label "Back" \
         --menu "Move using [UP] [Down], [Enter] to select" 17 60 10\
         php "$php"\
@@ -234,7 +234,7 @@ function changePW {
 
 
 function main_menu {
-    dialog --backtitle "Hosted4u - Manager" --title " Main Menu - v$VER"\
+    dialog --backtitle "$TITLE" --title " Main Menu - v$VER"\
         --cancel-label "Quit" \
         --menu "Move using [UP] [Down], [Enter] to select" 17 60 10\
         manageWebsites "Manage Websites"\
