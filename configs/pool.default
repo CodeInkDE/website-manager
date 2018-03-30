@@ -1,7 +1,7 @@
 [%DOMAIN%]
 
-user = www-%DOMAIN%
-group = www-%DOMAIN%
+user = www-%USER%
+group = www-%USER%
 
 listen = /run/php/php7.0-%DOMAIN%.sock
 
