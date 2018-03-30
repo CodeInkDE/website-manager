@@ -147,7 +147,7 @@ function manageTld {
         subdomains "Subdomains"\
         php "$php"\
         changePW "Reset password" \
-        delete "Delete website"\
+        delete "Delete"\
         back "Back" 2>$_tmp
 
     menuitem=`cat $_tmp`
@@ -212,8 +212,8 @@ function addTld {
     exit 0
 }
 
-function deleteTLD {
-    domain=${@}
+function deleteTld {
+    domain=$1
 
     dialog --title "Delete TLD" --yesno "Remove $domain and all subdomains!?" 8 40
     response=$?
