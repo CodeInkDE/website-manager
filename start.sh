@@ -47,6 +47,9 @@ if [[ $checkdialog = "" ]]; then
     apt-get install dialog -y # 2>&1 > /dev/null
 fi
 
+# check for updates
+git pull
+
 }
 
 function checkroot {
@@ -109,7 +112,8 @@ function subdomain_menu {
 
     for d in $list
     do
-        domains="$domains $d $leer "
+        if [[ $d != "httpdocs" ]]; then 
+            domains="$domains $d $leer "
     done
 
     domains="$domains add $leer"
