@@ -236,7 +236,6 @@ function deleteTld {
     list="$(ls -G /var/www/vhost/$domain/)"
     for subdomain in $list
     do
-        echo $subdomain
         if [[ $subdomain != "httpdocs" ]]; then 
             rm -R "/var/www/vhost/$domain/$subdomain/"
             removeDependencies $subdomain
@@ -244,11 +243,12 @@ function deleteTld {
     done
     rm -R "/var/www/vhost/$domain/"
     removeDependencies $domain
-    formatted=$(echo "$domain" | sed -r 's/\.//g')
-    deluser www-"$formatted"
 
     service php7.0-fpm reload
     service nginx reload
+
+    formatted=$(echo "$domain" | sed -r 's/\.//g')
+    deluser www-"$formatted"
 
     clear
     echo "**************************"
@@ -394,8 +394,8 @@ function removeDependencies {
     rm /etc/php/7.0/fpm/pool.d/"$formattedValue".conf
     rm /etc/nginx/sites-enabled/"$value"
     rm -rf "/etc/letsencrypt/live/$value"
+    rm -rf "/etc/letsencrypt/archive/$value"
     rm "/etc/letsencrypt/renewal/$value.conf"
-    rm "/etc/letsencrypt/archive/$value"
 }
 
 ##
