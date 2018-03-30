@@ -141,7 +141,7 @@ function manageTld {
         php="[ Deactivated ]"
     fi
 
-    dialog --backtitle "$TITLE" --title " Manage Website - $website"\
+    dialog --backtitle "$TITLE" --title " Manage TLD - $website"\
         --cancel-label "Back" \
         --menu "Move using [UP] [Down], [Enter] to select" 17 60 10\
         subdomains "Subdomains"\
@@ -238,25 +238,19 @@ function deleteTld {
     do
         if [[ $subdomain != "httpdocs" ]]; then 
             rm -R "/var/www/vhost/$domain/$subdomain/"
-            formatted=$(echo "$subdomain" | sed -r 's/\.//g')
-            rm /etc/php/7.0/fpm/pool.d/"$formatted".conf
-            rm /etc/nginx/sites-enabled/"$subdomain"
-            rm -rf "/etc/letsencrypt/live/$subdomain"
-            rm "/etc/letsencrypt/renewal/$subdomain.conf"
+            removeDependencies $subdomain
         fi
     done
     rm -R "/var/www/vhost/$domain"
 
     formatted=$(echo "$domain" | sed -r 's/\.//g')
-    rm /etc/php/7.0/fpm/pool.d/"$formatted".conf
-    rm /etc/nginx/sites-enabled/"$domain"
-    rm -rf "/etc/letsencrypt/live/$domain"
-    rm "/etc/letsencrypt/renewal/$domain.conf"
+    removeDependencies $domain
 
     service php7.0-fpm reload
     service nginx reload
     deluser www-"$formatted"
 
+    clear
     echo "**************************"
     echo "Domain: $domain"
     echo "Status: DELETED"
@@ -365,13 +359,7 @@ function deleteSubdomain {
 
     tar cfz backups/$subdomain.tar.gz "/var/www/vhost/$tld/$subdomain/"
     rm -R "/var/www/vhost/$tld/$subdomain/"
-
-    formatted=$(echo "$subdomain" | sed -r 's/\.//g')
-
-    rm /etc/php/7.0/fpm/pool.d/"$formatted".conf
-    rm /etc/nginx/sites-enabled/"$subdomain"
-    rm -rf "/etc/letsencrypt/live/$subdomain"
-    rm "/etc/letsencrypt/renewal/$subdomain.conf"
+    removeDependencies $subdomain
 
     service php7.0-fpm reload
     service nginx reload
@@ -392,13 +380,22 @@ function changePW {
     echo "$user:$pw"|chpasswd
 
     clear
-
     echo "**************************"
     echo "User: $user"
     echo "Password: $pw"
     echo "**************************"
 
     exit 0
+}
+
+function removeDependencies {
+    domain=$1
+    formatted=$(echo "$domain" | sed -r 's/\.//g')
+    rm /etc/php/7.0/fpm/pool.d/"$formatted".conf
+    rm /etc/nginx/sites-enabled/"$domain"
+    rm -rf "/etc/letsencrypt/live/$domain"
+    rm "/etc/letsencrypt/renewal/$domain.conf"
+    rm "/etc/letsencrypt/archive/$domain.conf"
 }
 
 ##
