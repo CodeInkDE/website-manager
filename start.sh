@@ -389,13 +389,13 @@ function changePW {
 }
 
 function removeDependencies {
-    domain=$1
-    formatted=$(echo "$domain" | sed -r 's/\.//g')
-    rm /etc/php/7.0/fpm/pool.d/"$formatted".conf
-    rm /etc/nginx/sites-enabled/"$domain"
-    rm -rf "/etc/letsencrypt/live/$domain"
-    rm "/etc/letsencrypt/renewal/$domain.conf"
-    rm "/etc/letsencrypt/archive/$domain"
+    value=$1
+    formattedValue=$(echo "$value" | sed -r 's/\.//g')
+    rm /etc/php/7.0/fpm/pool.d/"$formattedValue".conf
+    rm /etc/nginx/sites-enabled/"$value"
+    rm -rf "/etc/letsencrypt/live/$value"
+    rm "/etc/letsencrypt/renewal/$value.conf"
+    rm "/etc/letsencrypt/archive/$value"
 }
 
 ##
