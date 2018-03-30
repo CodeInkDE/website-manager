@@ -188,6 +188,7 @@ function addTld {
     useradd www-"$formatted" --home-dir "/var/www/vhost/$domain/" --no-create-home --shell /bin/nologin --password "$pw" --groups www-data
 
     cp configs/nginx-sites.default /etc/nginx/sites-enabled/"$domain"
+    sed -i "s/%TLD%/$domain/g" /etc/nginx/sites-enabled/"$domain"
     sed -i "s/%DOMAIN%/$domain/g" /etc/nginx/sites-enabled/"$domain"
     sed -i "s/%FORMATTED%/$formatted/g" /etc/nginx/sites-enabled/"$domain"
     sed -i "s/%DIRECTORY%/httpdocs/g" /etc/nginx/sites-enabled/"$domain"
@@ -214,7 +215,7 @@ function addTld {
 function deleteTLD {
     domain=${@}
 
-    dialog --title "Delete TLD" --yesno "Remove $domain and all Subdomains!?" 8 40
+    dialog --title "Delete TLD" --yesno "Remove $domain and all subdomains!?" 8 40
     response=$?
 
     if [ $response = 1 ]; then
@@ -231,10 +232,22 @@ function deleteTLD {
     fi
 
     tar cfz backups/$domain.tar.gz "/var/www/vhost/$domain/"
+
+    list="$(ls -G /var/www/vhost/$domain/)"
+    for subdomain in $list
+    do
+        if [[ $subdomain != "httpdocs" ]]; then 
+            rm -R "/var/www/vhost/$domain/$subdomain/"
+            formatted=$(echo "$subdomain" | sed -r 's/\.//g')
+            rm /etc/php/7.0/fpm/pool.d/"$formatted".conf
+            rm /etc/nginx/sites-enabled/"$subdomain"
+            rm -rf "/etc/letsencrypt/live/$subdomain"
+            rm "/etc/letsencrypt/renewal/$subdomain.conf"
+        fi
+    done
     rm -R "/var/www/vhost/$domain"
 
     formatted=$(echo "$domain" | sed -r 's/\.//g')
-
     rm /etc/php/7.0/fpm/pool.d/"$formatted".conf
     rm /etc/nginx/sites-enabled/"$domain"
     rm -rf "/etc/letsencrypt/live/$domain"
@@ -280,7 +293,7 @@ function manageSubdomain {
 }
 
 function addSubdomain {
-    tld=${@}
+    tld=$1
 
 	subdomain=$( \
 		dialog  --title "Add Subdomain" \
@@ -307,6 +320,7 @@ function addSubdomain {
     sed -i "s/%USER%/$formattedTld/g" /etc/php/7.0/fpm/pool.d/"$formatted".conf
 
     cp configs/nginx-sites.default /etc/nginx/sites-enabled/"$subdomain"
+    sed -i "s/%TLD%/$tld/g" /etc/nginx/sites-enabled/"$subdomain"
     sed -i "s/%DOMAIN%/$subdomain/g" /etc/nginx/sites-enabled/"$subdomain"
     sed -i "s/%FORMATTED%/$formattedSub/g" /etc/nginx/sites-enabled/"$subdomain"
     sed -i "s/%DIRECTORY%/$subdomain/g" /etc/nginx/sites-enabled/"$subdomain"
