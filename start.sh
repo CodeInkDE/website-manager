@@ -102,7 +102,7 @@ function tld_menu {
 }
 
 function subdomain_menu {
-    tld = $website
+    tld = $1
     domains=""
     list="$(ls -G /var/www/vhost/$tld/)"
     leer="-->"
@@ -119,7 +119,7 @@ function subdomain_menu {
     if [[ $subdomain != "add" && $subdomain != "Back" ]]; then
         manageSubdomain "$tld"
     else if [[ $subdomain == "add" ]]; then
-        addSubdomain "$subdomain"
+        addSubdomain "$tld"
     else
         main_menu
     fi
@@ -311,7 +311,7 @@ function addSubdomain {
     service nginx reload
 
     cp configs/index.html "/var/www/vhost/$tld/$subdomain/index.html"
-    sed -i "s/%DOMAIN%/$tld/g" "/var/www/vhost/$tld/$subdomain/index.html"
+    sed -i "s/%DOMAIN%/$subdomain/g" "/var/www/vhost/$tld/$subdomain/index.html"
     chown -R www-"$formatted":www-data "/var/www/vhost/$tld/$subdomain/"
 
     echo "**************************"
@@ -363,8 +363,6 @@ function deleteSubdomain {
 
     exit 0
 }
-
-
 
 function changePW {
     user=${@}
