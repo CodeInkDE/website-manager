@@ -21,7 +21,7 @@ server {
     listen [::]:443 ssl http2;
     server_name %DOMAIN%;
 
-    root /var/www/vhost/%DOMAIN%;
+    root /var/www/vhost/%TLD%/%DIRECTORY%;
     index index.php index.html;
 
     ssl_certificate /etc/letsencrypt/live/%DOMAIN%/fullchain.pem;
