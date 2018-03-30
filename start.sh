@@ -102,7 +102,7 @@ function tld_menu {
 }
 
 function subdomain_menu {
-    tld = $1
+    tld=$1
     domains=""
     list="$(ls -G /var/www/vhost/$tld/)"
     leer="-->"
