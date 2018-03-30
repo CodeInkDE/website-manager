@@ -122,7 +122,7 @@ function subdomain_menu {
     dialog --backtitle "$TITLE" --title " Manage Subdomains of $tld" --cancel-label "Back" --menu "Move using [UP] [Down], [Enter] to select" 17 60 10 $domains 2>$_tmp
     subdomain=`cat $_tmp`
     if [[ $subdomain != "add" && $subdomain != "Back" ]]; then
-        manageSubdomain "$tld"
+        manageSubdomain "$tld" "$subdomain"
     else if [[ $subdomain == "add" ]]; then
         addSubdomain "$tld"
     else
@@ -255,7 +255,8 @@ function deleteTLD {
 
 ### Subdomain ###
 function manageSubdomain {
-    tld=${@}
+    tld=$1
+    subdomain=$2
 
     if [ -f "/etc/php/7.0/fpm/pool.d/$formatted.conf" ]; then
         php="[ Activated ]"
@@ -272,8 +273,8 @@ function manageSubdomain {
 
     menuitem=`cat $_tmp`
     case $menuitem in
-        php) manageSubdomain "$tld";;
-        delete) deleteSubdomain "$tld";;
+        php) manageSubdomain "$tld" "$subdomain";;
+        delete) deleteSubdomain "$tld" "$subdomain";;
         quit) rm $_tmp; exit 0;;
     esac
 }
@@ -282,7 +283,7 @@ function addSubdomain {
     tld=${@}
 
 	subdomain=$( \
-		dialog  --title "Add TLD" \
+		dialog  --title "Add Subdomain" \
 				--cancel-label "Cancel" \
 			    --inputbox "Type in your Subdomain (example: subdomain.$tld)" 8 40 \
 		3>&1 1>&2 2>&3 3>&- \
@@ -329,7 +330,8 @@ function addSubdomain {
 }
 
 function deleteSubdomain {
-    tld=${@}
+    tld=$1
+    subdomain=$2
 
     dialog --title "Delete TLD" --yesno "Remove $subdomain" 8 40
     response=$?
@@ -339,7 +341,7 @@ function deleteSubdomain {
         exit 0
     fi
 
-    if [ -z "$domain" ]; then
+    if [ -z "$tld" ]; then
         errorExit "No parameter!"
     fi
 
