@@ -114,6 +114,7 @@ function subdomain_menu {
     do
         if [[ $d != "httpdocs" ]]; then 
             domains="$domains $d $leer "
+        fi
     done
 
     domains="$domains add $leer"
