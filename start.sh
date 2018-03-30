@@ -333,7 +333,7 @@ function deleteSubdomain {
     tld=$1
     subdomain=$2
 
-    dialog --title "Delete TLD" --yesno "Remove $subdomain" 8 40
+    dialog --title "Delete Subdomain" --yesno "Remove $subdomain" 8 40
     response=$?
 
     if [ $response = 1 ]; then
@@ -345,7 +345,7 @@ function deleteSubdomain {
         errorExit "No parameter!"
     fi
 
-	if ! [ -d "/var/www/vhost/$domain/$subdomain" ]; then
+	if ! [ -d "/var/www/vhost/$tld/$subdomain" ]; then
         errorExit "TLD doesn't exists!"
     fi
 
