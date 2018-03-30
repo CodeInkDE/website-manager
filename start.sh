@@ -345,8 +345,8 @@ function deleteSubdomain {
         errorExit "No parameter!"
     fi
 
-	if ! [ -d "/var/www/vhost/$tld/$subdomain" ]; then
-        errorExit "TLD doesn't exists!"
+	if ! [ -d "/var/www/vhost/$tld/$subdomain/" ]; then
+        errorExit "Subdomain doesn't exists!"
     fi
 
     tar cfz backups/$subdomain.tar.gz "/var/www/vhost/$tld/$subdomain/"
