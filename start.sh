@@ -178,6 +178,7 @@ function addTld {
     fi
 
     mkdir -p "/var/www/vhost/$domain/httpdocs/"
+    mkdir -p "/var/www/vhost/$domain/logs/"
     formatted=$(echo "$domain" | sed -r 's/\.//g')
 
     cp configs/pool.default /etc/php/7.0/fpm/pool.d/"$formatted".conf
