@@ -113,7 +113,7 @@ function subdomain_menu {
 
     for d in $list
     do
-        if [[ $d != "httpdocs" ]]; then 
+        if [[ $d != "httpdocs" ]] && [[ $d != "logs" ]]; then 
             domains="$domains $d $leer "
         fi
     done
