@@ -1,6 +1,7 @@
 #!/bin/bash
 
 VER='1.2.0'
+PHPVer='7.2'
 _tmp="/tmp/answer.$$"
 TITLE="CodeInk - Manager"
 
@@ -135,7 +136,7 @@ function subdomain_menu {
 function manageTld {
     formatted=$(echo "$website" | sed -r 's/\.//g')
 
-    if [ -f "/etc/php/7.0/fpm/pool.d/$formatted.conf" ]; then
+    if [ -f "/etc/php/$PHPVer/fpm/pool.d/$formatted.conf" ]; then
         php="[ Activated ]"
     else
         php="[ Deactivated ]"
@@ -181,9 +182,9 @@ function addTld {
     mkdir -p "/var/www/vhost/$domain/logs/"
     formatted=$(echo "$domain" | sed -r 's/\.//g')
 
-    cp configs/pool.default /etc/php/7.0/fpm/pool.d/"$formatted".conf
-    sed -i "s/%DOMAIN%/$formatted/g" /etc/php/7.0/fpm/pool.d/"$formatted".conf
-    sed -i "s/%USER%/$formatted/g" /etc/php/7.0/fpm/pool.d/"$formatted".conf
+    cp configs/pool.default /etc/php/"$PHPVer"/fpm/pool.d/"$formatted".conf
+    sed -i "s/%DOMAIN%/$formatted/g" /etc/php/"$PHPVer"/fpm/pool.d/"$formatted".conf
+    sed -i "s/%USER%/$formatted/g" /etc/php/"$PHPVer"/fpm/pool.d/"$formatted".conf
 
     pw=$(head /dev/urandom | tr -dc A-Za-z0-9 | head -c 15 ; echo '')
     useradd www-"$formatted" --home-dir "/var/www/vhost/$domain/" --no-create-home --shell /bin/nologin --password "$pw" --groups www-data
@@ -196,7 +197,7 @@ function addTld {
 
     /usr/bin/certbot certonly --webroot -w /var/www/letsencrypt/ -d  "$domain"
 
-    service php7.0-fpm reload
+    service php"$PHPVer"-fpm reload
     service nginx reload
 
     cp configs/index.html "/var/www/vhost/$domain/httpdocs/index.html"
@@ -245,7 +246,7 @@ function deleteTld {
     rm -R "/var/www/vhost/$domain/"
     removeDependencies $domain
 
-    service php7.0-fpm reload
+    service php"$PHPVer"-fpm reload
     service nginx reload
 
     formatted=$(echo "$domain" | sed -r 's/\.//g')
@@ -266,7 +267,7 @@ function manageSubdomain {
     tld=$1
     subdomain=$2
 
-    if [ -f "/etc/php/7.0/fpm/pool.d/$formatted.conf" ]; then
+    if [ -f "/etc/php/$PHPVer/fpm/pool.d/$formatted.conf" ]; then
         php="[ Activated ]"
     else
         php="[ Deactivated ]"
@@ -310,9 +311,9 @@ function addSubdomain {
     formattedSub=$(echo "$subdomain" | sed -r 's/\.//g')
     formattedTld=$(echo "$tld" | sed -r 's/\.//g')
 
-    cp configs/pool.default /etc/php/7.0/fpm/pool.d/"$formatted".conf
-    sed -i "s/%DOMAIN%/$formattedSub/g" /etc/php/7.0/fpm/pool.d/"$formatted".conf
-    sed -i "s/%USER%/$formattedTld/g" /etc/php/7.0/fpm/pool.d/"$formatted".conf
+    cp configs/pool.default /etc/php/"$PHPVer"/fpm/pool.d/"$formatted".conf
+    sed -i "s/%DOMAIN%/$formattedSub/g" /etc/php/"$PHPVer"/fpm/pool.d/"$formatted".conf
+    sed -i "s/%USER%/$formattedTld/g" /etc/php/"$PHPVer"/fpm/pool.d/"$formatted".conf
 
     cp configs/nginx-sites.default /etc/nginx/sites-enabled/"$subdomain"
     sed -i "s/%TLD%/$tld/g" /etc/nginx/sites-enabled/"$subdomain"
@@ -322,7 +323,7 @@ function addSubdomain {
 
     /usr/bin/certbot certonly --webroot -w /var/www/letsencrypt/ -d  "$subdomain"
 
-    service php7.0-fpm reload
+    service php"$PHPVer"-fpm reload
     service nginx reload
 
     cp configs/index.html "/var/www/vhost/$tld/$subdomain/index.html"
@@ -362,7 +363,7 @@ function deleteSubdomain {
     rm -R "/var/www/vhost/$tld/$subdomain/"
     removeDependencies $subdomain
 
-    service php7.0-fpm reload
+    service php"$PHPVer"-fpm reload
     service nginx reload
 
     echo "**************************"
@@ -392,7 +393,7 @@ function changePW {
 function removeDependencies {
     value=$1
     formattedValue=$(echo "$value" | sed -r 's/\.//g')
-    rm /etc/php/7.0/fpm/pool.d/"$formattedValue".conf
+    rm /etc/php/"$PHPVer"/fpm/pool.d/"$formattedValue".conf
     rm /etc/nginx/sites-enabled/"$value"
     rm -rf "/etc/letsencrypt/live/$value"
     rm -rf "/etc/letsencrypt/archive/$value"
