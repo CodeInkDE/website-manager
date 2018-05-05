@@ -238,7 +238,7 @@ function deleteTld {
     list="$(ls -G /var/www/vhost/$domain/)"
     for subdomain in $list
     do
-        if [[ $subdomain != "httpdocs" ]]; then 
+        if [[ $subdomain != "httpdocs" ]] && [[ $subdomain != "logs" ]]; then 
             rm -R "/var/www/vhost/$domain/$subdomain/"
             removeDependencies $subdomain
         fi
