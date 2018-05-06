@@ -1,7 +1,7 @@
 #!/bin/bash
 
 VER='1.2.0'
-PHPVer='7.2'
+PHPVer='7.0'
 _tmp="/tmp/answer.$$"
 TITLE="CodeInk - Manager"
 
