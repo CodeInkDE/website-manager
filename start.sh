@@ -312,9 +312,9 @@ function addSubdomain {
     formattedSub=$(echo "$subdomain" | sed -r 's/\.//g')
     formattedTld=$(echo "$tld" | sed -r 's/\.//g')
 
-    cp configs/pool.default /etc/php/"$PHPVer"/fpm/pool.d/"$formatted".conf
-    sed -i "s/%DOMAIN%/$formattedSub/g" /etc/php/"$PHPVer"/fpm/pool.d/"$formatted".conf
-    sed -i "s/%USER%/$formattedTld/g" /etc/php/"$PHPVer"/fpm/pool.d/"$formatted".conf
+    cp configs/pool.default /etc/php/"$PHPVer"/fpm/pool.d/"$formattedSub".conf
+    sed -i "s/%DOMAIN%/$formattedSub/g" /etc/php/"$PHPVer"/fpm/pool.d/"$formattedSub".conf
+    sed -i "s/%USER%/$formattedTld/g" /etc/php/"$PHPVer"/fpm/pool.d/"$formattedSub".conf
 
     cp configs/nginx-sites.default /etc/nginx/sites-enabled/"$subdomain"
     sed -i "s/%TLD%/$tld/g" /etc/nginx/sites-enabled/"$subdomain"
