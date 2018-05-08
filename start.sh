@@ -204,6 +204,7 @@ function addTld {
     sed -i "s/%DOMAIN%/$domain/g" "/var/www/vhost/$domain/httpdocs/index.html"
     chown root:root "/var/www/vhost/$domain/"
     chown -R www-"$formatted":www-data "/var/www/vhost/$domain/httpdocs/"
+    chown -R www-"$formatted":root "/var/www/vhost/$domain/logs/"
 
     echo "**************************"
     echo "Domain: $domain"
