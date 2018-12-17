@@ -396,6 +396,7 @@ function removeDependencies {
     formattedValue=$(echo "$value" | sed -r 's/\.//g')
     rm /etc/php/"$PHPVer"/fpm/pool.d/"$formattedValue".conf
     rm /etc/nginx/sites-enabled/"$value"
+    /usr/bin/certbot revoke --cert-path "/etc/letsencrypt/archive/$value/cert1.pem"
     rm -rf "/etc/letsencrypt/live/$value"
     rm -rf "/etc/letsencrypt/archive/$value"
     rm "/etc/letsencrypt/renewal/$value.conf"
