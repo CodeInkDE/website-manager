@@ -185,6 +185,7 @@ function addTld {
     cp configs/pool.default /etc/php/"$PHPVer"/fpm/pool.d/"$formatted".conf
     sed -i "s/%DOMAIN%/$formatted/g" /etc/php/"$PHPVer"/fpm/pool.d/"$formatted".conf
     sed -i "s/%USER%/$formatted/g" /etc/php/"$PHPVer"/fpm/pool.d/"$formatted".conf
+    sed -i "s/%PHP_VERSION%/$PHPVer/g" /etc/php/"$PHPVer"/fpm/pool.d/"$formatted".conf
 
     pw=$(head /dev/urandom | tr -dc A-Za-z0-9 | head -c 15 ; echo '')
     useradd www-"$formatted" --home-dir "/var/www/vhost/$domain/" --no-create-home --shell /bin/nologin --password "$pw" --groups www-data
