@@ -316,6 +316,7 @@ function addSubdomain {
     cp configs/pool.default /etc/php/"$PHPVer"/fpm/pool.d/"$formattedSub".conf
     sed -i "s/%DOMAIN%/$formattedSub/g" /etc/php/"$PHPVer"/fpm/pool.d/"$formattedSub".conf
     sed -i "s/%USER%/$formattedTld/g" /etc/php/"$PHPVer"/fpm/pool.d/"$formattedSub".conf
+    sed -i "s/%PHPVERSION%/$PHPVer/g" /etc/php/"$PHPVer"/fpm/pool.d/"$formattedSub".conf
 
     cp configs/nginx-sites.default /etc/nginx/sites-enabled/"$subdomain"
     sed -i "s/%TLD%/$tld/g" /etc/nginx/sites-enabled/"$subdomain"
