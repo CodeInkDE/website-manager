@@ -1,6 +1,6 @@
 #!/bin/bash
 
-VER='1.3.0'
+VER='1.3.1'
 PHPVer='7.3'
 _tmp="/tmp/answer.$$"
 TITLE="CodeInk - Manager"
