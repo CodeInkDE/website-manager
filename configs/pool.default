@@ -3,7 +3,7 @@
 user = www-%USER%
 group = www-%USER%
 
-listen = /run/php/php%PHP_VERSION%-%DOMAIN%.sock
+listen = /run/php/php%PHPVERSION%-%DOMAIN%.sock
 
 listen.owner = www-data
 listen.group = www-data

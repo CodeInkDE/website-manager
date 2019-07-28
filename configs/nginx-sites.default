@@ -27,6 +27,8 @@ server {
     root /var/www/vhost/%TLD%/%DIRECTORY%;
     index index.php index.html;
 
+    include /etc/nginx/ssl/ssl.conf;
+
     ssl_certificate /etc/letsencrypt/live/%DOMAIN%/fullchain.pem;
     ssl_certificate_key /etc/letsencrypt/live/%DOMAIN%/privkey.pem;
     ssl_trusted_certificate /etc/letsencrypt/live/%DOMAIN%/fullchain.pem;
@@ -37,14 +39,6 @@ server {
     add_header X-Frame-Options "SAMEORIGIN";
     add_header 'Referrer-Policy' 'origin';
 
-    ssl_protocols TLSv1.2 TLSv1.3;
-    ssl_prefer_server_ciphers on;
-    ssl_ciphers 'TLS-CHACHA20-POLY1305-SHA256:TLS-AES-256-GCM-SHA384:TLS-AES-128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA256';
-    ssl_ecdh_curve prime256v1:secp384r1;
-    ssl_dhparam /etc/nginx/ssl/dhparam2048.pem;
-    ssl_stapling on;
-    ssl_stapling_verify on;
-    ssl_session_cache builtin:1000 shared:SSL:10m;
     resolver 1.1.1.1 9.9.9.9 valid=300s;
     resolver_timeout 5s;
 
@@ -60,7 +54,7 @@ server {
         if (!-f $document_root$fastcgi_script_name) {
             return 404;
         }
-        fastcgi_pass    unix:/var/run/php/php7.2-%FORMATTED%.sock;
+        fastcgi_pass    unix:/var/run/php/php7.3-%FORMATTED%.sock;
         fastcgi_index   index.php;
         fastcgi_param DOCUMENT_ROOT $document_root;
         include fastcgi_params;

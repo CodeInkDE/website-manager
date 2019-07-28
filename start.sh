@@ -1,7 +1,7 @@
 #!/bin/bash
 
-VER='1.3.0'
-PHPVer='7.2'
+VER='1.3.1'
+PHPVer='7.3'
 _tmp="/tmp/answer.$$"
 TITLE="CodeInk - Manager"
 
@@ -185,7 +185,7 @@ function addTld {
     cp configs/pool.default /etc/php/"$PHPVer"/fpm/pool.d/"$formatted".conf
     sed -i "s/%DOMAIN%/$formatted/g" /etc/php/"$PHPVer"/fpm/pool.d/"$formatted".conf
     sed -i "s/%USER%/$formatted/g" /etc/php/"$PHPVer"/fpm/pool.d/"$formatted".conf
-    sed -i "s/%PHP_VERSION%/$PHPVer/g" /etc/php/"$PHPVer"/fpm/pool.d/"$formatted".conf
+    sed -i "s/%PHPVERSION%/$PHPVer/g" /etc/php/"$PHPVer"/fpm/pool.d/"$formatted".conf
 
     pw=$(head /dev/urandom | tr -dc A-Za-z0-9 | head -c 15 ; echo '')
     useradd www-"$formatted" --home-dir "/var/www/vhost/$domain/" --no-create-home --shell /bin/nologin --password "$pw" --groups www-data
@@ -317,6 +317,7 @@ function addSubdomain {
     cp configs/pool.default /etc/php/"$PHPVer"/fpm/pool.d/"$formattedSub".conf
     sed -i "s/%DOMAIN%/$formattedSub/g" /etc/php/"$PHPVer"/fpm/pool.d/"$formattedSub".conf
     sed -i "s/%USER%/$formattedTld/g" /etc/php/"$PHPVer"/fpm/pool.d/"$formattedSub".conf
+    sed -i "s/%PHPVERSION%/$PHPVer/g" /etc/php/"$PHPVer"/fpm/pool.d/"$formattedSub".conf
 
     cp configs/nginx-sites.default /etc/nginx/sites-enabled/"$subdomain"
     sed -i "s/%TLD%/$tld/g" /etc/nginx/sites-enabled/"$subdomain"
