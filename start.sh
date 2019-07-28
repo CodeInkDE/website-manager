@@ -197,7 +197,7 @@ function addTld {
     sed -i "s/%FORMATTED%/$formatted/g" /etc/nginx/sites-enabled/"$domain"
     sed -i "s/%DIRECTORY%/httpdocs/g" /etc/nginx/sites-enabled/"$domain"
 
-    /usr/bin/certbot certonly --webroot -w /var/www/letsencrypt/ -d  "$domain"
+    /usr/bin/certbot certonly --webroot -w /var/www/letsencrypt/ -d  "$domain" "www.$domain"
 
     service php"$PHPVer"-fpm reload
     service nginx reload
