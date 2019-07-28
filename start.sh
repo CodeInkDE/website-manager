@@ -191,8 +191,9 @@ function addTld {
     useradd www-"$formatted" --home-dir "/var/www/vhost/$domain/" --no-create-home --shell /bin/nologin --password "$pw" --groups www-data
 
     cp configs/nginx-sites.default /etc/nginx/sites-enabled/"$domain"
+    servername="$domain www.$domain"
     sed -i "s/%TLD%/$domain/g" /etc/nginx/sites-enabled/"$domain"
-    sed -i "s/%DOMAIN%/$domain/g" /etc/nginx/sites-enabled/"$domain"
+    sed -i "s/%DOMAIN%/$servername/g" /etc/nginx/sites-enabled/"$domain"
     sed -i "s/%FORMATTED%/$formatted/g" /etc/nginx/sites-enabled/"$domain"
     sed -i "s/%DIRECTORY%/httpdocs/g" /etc/nginx/sites-enabled/"$domain"
 
