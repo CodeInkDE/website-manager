@@ -197,7 +197,10 @@ function addTld {
     sed -i "s/%FORMATTED%/$formatted/g" /etc/nginx/sites-enabled/"$domain"
     sed -i "s/%DIRECTORY%/httpdocs/g" /etc/nginx/sites-enabled/"$domain"
 
-    /usr/bin/certbot certonly --webroot -w /var/www/letsencrypt/ -d  "$domain" "www.$domain"
+    if [ $response_cert = 1 ]; then
+        /usr/bin/certbot certonly --webroot -w /var/www/letsencrypt/ -d  "$domain" "www.$domain"
+        exit 0
+    fi
 
     service php"$PHPVer"-fpm reload
     service nginx reload
@@ -325,7 +328,14 @@ function addSubdomain {
     sed -i "s/%FORMATTED%/$formattedSub/g" /etc/nginx/sites-enabled/"$subdomain"
     sed -i "s/%DIRECTORY%/$subdomain/g" /etc/nginx/sites-enabled/"$subdomain"
 
-    /usr/bin/certbot certonly --webroot -w /var/www/letsencrypt/ -d  "$subdomain"
+
+    dialog --title "Certificate" --yesno "Should a lets encrypt certificate be generated?" 8 40
+    response_cert=$?
+
+    if [ $response_cert = 1 ]; then
+        /usr/bin/certbot certonly --webroot -w /var/www/letsencrypt/ -d  "$subdomain"
+        exit 0
+    fi
 
     service php"$PHPVer"-fpm reload
     service nginx reload
