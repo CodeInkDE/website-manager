@@ -197,6 +197,9 @@ function addTld {
     sed -i "s/%FORMATTED%/$formatted/g" /etc/nginx/sites-enabled/"$domain"
     sed -i "s/%DIRECTORY%/httpdocs/g" /etc/nginx/sites-enabled/"$domain"
 
+    dialog --title "Certificate" --yesno "Should a lets encrypt certificate be generated?" 8 40
+    response_cert=$?
+
     if [ $response_cert = 1 ]; then
         /usr/bin/certbot certonly --webroot -w /var/www/letsencrypt/ -d  "$domain" "www.$domain"
         exit 0
