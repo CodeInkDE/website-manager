@@ -1,6 +1,6 @@
 #!/bin/bash
 
-VER='1.3.1'
+VER='1.3.2'
 PHPVer='7.3'
 _tmp="/tmp/answer.$$"
 TITLE="CodeInk - Manager"
@@ -200,9 +200,8 @@ function addTld {
     dialog --title "Certificate" --yesno "Should a lets encrypt certificate be generated?" 8 40
     response_cert=$?
 
-    if [ $response_cert = 1 ]; then
+    if [ $response_cert = 0 ]; then
         /usr/bin/certbot certonly --webroot -w /var/www/letsencrypt/ -d  "$domain" "www.$domain"
-        exit 0
     fi
 
     service php"$PHPVer"-fpm reload
@@ -335,9 +334,8 @@ function addSubdomain {
     dialog --title "Certificate" --yesno "Should a lets encrypt certificate be generated?" 8 40
     response_cert=$?
 
-    if [ $response_cert = 1 ]; then
+    if [ $response_cert = 0 ]; then
         /usr/bin/certbot certonly --webroot -w /var/www/letsencrypt/ -d  "$subdomain"
-        exit 0
     fi
 
     service php"$PHPVer"-fpm reload
