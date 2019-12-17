@@ -3,7 +3,7 @@
 VER='1.3.2'
 PHPVer='7.3'
 _tmp="/tmp/answer.$$"
-TITLE="CodeInk - Manager"
+TITLE="Nevondo - Manager"
 
 ##
 #
