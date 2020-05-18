@@ -1,9 +1,9 @@
 #!/bin/bash
 
-VER='1.3.2'
+VER='1.4.0'
 PHPVer='7.3'
 _tmp="/tmp/answer.$$"
-TITLE="Nevondo - Manager"
+TITLE="WebsiteManager - Nevondo"
 
 ##
 #
@@ -136,17 +136,10 @@ function subdomain_menu {
 function manageTld {
     formatted=$(echo "$website" | sed -r 's/\.//g')
 
-    if [ -f "/etc/php/$PHPVer/fpm/pool.d/$formatted.conf" ]; then
-        php="[ Activated ]"
-    else
-        php="[ Deactivated ]"
-    fi
-
     dialog --backtitle "$TITLE" --title " Manage TLD - $website"\
         --cancel-label "Back" \
         --menu "Move using [UP] [Down], [Enter] to select" 17 60 10\
         subdomains "Subdomains"\
-        php "$php"\
         changePW "Reset password" \
         delete "Delete"\
         back "Back" 2>$_tmp
@@ -197,12 +190,7 @@ function addTld {
     sed -i "s/%FORMATTED%/$formatted/g" /etc/nginx/sites-enabled/"$domain"
     sed -i "s/%DIRECTORY%/httpdocs/g" /etc/nginx/sites-enabled/"$domain"
 
-    dialog --title "Certificate" --yesno "Should a lets encrypt certificate be generated?" 8 40
-    response_cert=$?
-
-    if [ $response_cert = 0 ]; then
-        /usr/bin/certbot certonly --webroot -w /var/www/letsencrypt/ -d  "$domain" "www.$domain"
-    fi
+    /usr/bin/certbot certonly --webroot -w /var/www/letsencrypt/ -d  "$domain" "www.$domain"
 
     service php"$PHPVer"-fpm reload
     service nginx reload
@@ -275,12 +263,6 @@ function manageSubdomain {
     tld=$1
     subdomain=$2
 
-    if [ -f "/etc/php/$PHPVer/fpm/pool.d/$formatted.conf" ]; then
-        php="[ Activated ]"
-    else
-        php="[ Deactivated ]"
-    fi
-
     dialog --backtitle "$TITLE" --title " Manage Subdomain - $tld"\
         --cancel-label "Back" \
         --menu "Move using [UP] [Down], [Enter] to select" 17 60 10\
@@ -290,7 +272,6 @@ function manageSubdomain {
 
     menuitem=`cat $_tmp`
     case $menuitem in
-        php) manageSubdomain "$tld" "$subdomain";;
         delete) deleteSubdomain "$tld" "$subdomain";;
         quit) rm $_tmp; exit 0;;
     esac
@@ -330,13 +311,7 @@ function addSubdomain {
     sed -i "s/%FORMATTED%/$formattedSub/g" /etc/nginx/sites-enabled/"$subdomain"
     sed -i "s/%DIRECTORY%/$subdomain/g" /etc/nginx/sites-enabled/"$subdomain"
 
-
-    dialog --title "Certificate" --yesno "Should a lets encrypt certificate be generated?" 8 40
-    response_cert=$?
-
-    if [ $response_cert = 0 ]; then
-        /usr/bin/certbot certonly --webroot -w /var/www/letsencrypt/ -d  "$subdomain"
-    fi
+    /usr/bin/certbot certonly --webroot -w /var/www/letsencrypt/ -d  "$subdomain"
 
     service php"$PHPVer"-fpm reload
     service nginx reload
