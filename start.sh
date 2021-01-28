@@ -1,9 +1,9 @@
 #!/bin/bash
 
-VER='1.4.0'
+VER='1.4.1'
 PHPVer='7.3'
 _tmp="/tmp/answer.$$"
-TITLE="WebsiteManager - Nevondo"
+TITLE="Website Manager - Nevondo"
 
 ##
 #
@@ -35,7 +35,7 @@ function errorExit {
     exit 1
 }
 
-function installdialog {
+function installDialog {
 checkdialog=$(command -v dialog)
 
 if [[ $checkdialog = "" ]]; then
@@ -53,7 +53,7 @@ git pull
 
 }
 
-function checkroot {
+function checkRoot {
 if [ "`id -u`" != "0" ]; then
     redMessage "Wechsle zu dem Root Benutzer!"
     su root
@@ -64,7 +64,7 @@ if [ "`id -u`" != "0" ]; then
 	fi
 }
 
-function main_menu {
+function execute_MainMenu {
     dialog --backtitle "$TITLE" --title " Main Menu - v$VER"\
         --cancel-label "Quit" \
         --menu "Move using [UP] [Down], [Enter] to select" 17 60 10\
@@ -186,7 +186,8 @@ function addTld {
     cp configs/nginx-sites.default /etc/nginx/sites-enabled/"$domain"
     servername="$domain www.$domain"
     sed -i "s/%TLD%/$domain/g" /etc/nginx/sites-enabled/"$domain"
-    sed -i "s/%DOMAIN%/$servername/g" /etc/nginx/sites-enabled/"$domain"
+    sed -i "s/%DOMAIN%/$domain/g" /etc/nginx/sites-enabled/"$domain"
+    sed -i "s/%SERVERNAME%/$servername/g" /etc/nginx/sites-enabled/"$domain"
     sed -i "s/%FORMATTED%/$formatted/g" /etc/nginx/sites-enabled/"$domain"
     sed -i "s/%DIRECTORY%/httpdocs/g" /etc/nginx/sites-enabled/"$domain"
 
@@ -308,6 +309,7 @@ function addSubdomain {
     cp configs/nginx-sites.default /etc/nginx/sites-enabled/"$subdomain"
     sed -i "s/%TLD%/$tld/g" /etc/nginx/sites-enabled/"$subdomain"
     sed -i "s/%DOMAIN%/$subdomain/g" /etc/nginx/sites-enabled/"$subdomain"
+    sed -i "s/%SERVERNAME%/$subdomain/g" /etc/nginx/sites-enabled/"$subdomain"
     sed -i "s/%FORMATTED%/$formattedSub/g" /etc/nginx/sites-enabled/"$subdomain"
     sed -i "s/%DIRECTORY%/$subdomain/g" /etc/nginx/sites-enabled/"$subdomain"
 
@@ -326,7 +328,7 @@ function addSubdomain {
     echo "User: www-$formattedTld"
     echo "**************************"
 
-    exit 0      
+    exit 0
 }
 
 function deleteSubdomain {
@@ -393,12 +395,12 @@ function removeDependencies {
 
 ##
 #
-# Programm
+# Main
 #
 ##
-checkroot
-installdialog
+checkRoot
+installDialog
 
 while true; do
-    main_menu
+    execute_MainMenu
 done
