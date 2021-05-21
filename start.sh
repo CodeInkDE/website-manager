@@ -1,7 +1,7 @@
 #!/bin/bash
 
-VER='1.4.1'
-PHPVer='7.3'
+VER='1.4.2'
+PHPVer='7.4'
 _tmp="/tmp/answer.$$"
 TITLE="Website Manager - Nevondo"
 
@@ -27,7 +27,7 @@ function redMessage {
 }
 
 function yellowMessage {
-	echo -e "\\033[33;1m${@}\033[0m"
+    echo -e "\\033[33;1m${@}\033[0m"
 }
 
 function errorExit {
@@ -57,11 +57,11 @@ function checkRoot {
 if [ "`id -u`" != "0" ]; then
     redMessage "Wechsle zu dem Root Benutzer!"
     su root
-	fi
+    fi
 if [ "`id -u`" != "0" ]; then
     errorExit "Nicht als Rootbenutzer ausgeführt, Abgebrochen!"
     exit
-	fi
+    fi
 }
 
 function execute_MainMenu {
@@ -113,7 +113,7 @@ function subdomain_menu {
 
     for d in $list
     do
-        if [[ $d != "httpdocs" ]] && [[ $d != "logs" ]]; then 
+        if [[ $d != "httpdocs" ]] && [[ $d != "logs" ]]; then
             domains="$domains $d $leer "
         fi
     done
@@ -155,19 +155,19 @@ function manageTld {
 }
 
 function addTld {
-	domain=$( \
-		dialog  --title "Add TLD" \
-				--cancel-label "Cancel" \
-			    --inputbox "Type in your TLD-Domain (example: domain.de)" 8 40 \
-		3>&1 1>&2 2>&3 3>&- \
-	)
+    domain=$( \
+        dialog  --title "Add TLD" \
+                --cancel-label "Cancel" \
+                --inputbox "Type in your TLD-Domain (example: domain.de)" 8 40 \
+        3>&1 1>&2 2>&3 3>&- \
+    )
 
     if [ -z "$domain" ]; then
         addTld
         exit 0
     fi
 
-	if [ -d "/var/www/vhost/$domain/" ]; then
+    if [ -d "/var/www/vhost/$domain/" ]; then
         errorExit "TLD already exits!"
     fi
 
@@ -226,7 +226,7 @@ function deleteTld {
         errorExit "No parameter!"
     fi
 
-	if ! [ -d "/var/www/vhost/$domain/" ]; then
+    if ! [ -d "/var/www/vhost/$domain/" ]; then
         errorExit "TLD doesn't exists!"
     fi
 
@@ -235,7 +235,7 @@ function deleteTld {
     list="$(ls -G /var/www/vhost/$domain/)"
     for subdomain in $list
     do
-        if [[ $subdomain != "httpdocs" ]] && [[ $subdomain != "logs" ]]; then 
+        if [[ $subdomain != "httpdocs" ]] && [[ $subdomain != "logs" ]]; then
             rm -R "/var/www/vhost/$domain/$subdomain/"
             removeDependencies $subdomain
         fi
@@ -281,19 +281,19 @@ function manageSubdomain {
 function addSubdomain {
     tld=$1
 
-	subdomain=$( \
-		dialog  --title "Add Subdomain" \
-				--cancel-label "Cancel" \
-			    --inputbox "Type in your Subdomain (example: subdomain.$tld)" 8 40 \
-		3>&1 1>&2 2>&3 3>&- \
-	)
+    subdomain=$( \
+        dialog  --title "Add Subdomain" \
+                --cancel-label "Cancel" \
+                --inputbox "Type in your Subdomain (example: subdomain.$tld)" 8 40 \
+        3>&1 1>&2 2>&3 3>&- \
+    )
 
     if [ -z "$subdomain" ]; then
         addSubdomain
         exit 0
     fi
 
-	if [ -d "/var/www/vhost/$tld/$subdomain/" ]; then
+    if [ -d "/var/www/vhost/$tld/$subdomain/" ]; then
         errorExit "Subdomain already exits!"
     fi
 
@@ -347,7 +347,7 @@ function deleteSubdomain {
         errorExit "No parameter!"
     fi
 
-	if ! [ -d "/var/www/vhost/$tld/$subdomain/" ]; then
+    if ! [ -d "/var/www/vhost/$tld/$subdomain/" ]; then
         errorExit "Subdomain doesn't exists!"
     fi
 
