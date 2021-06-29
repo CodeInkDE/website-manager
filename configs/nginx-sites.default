@@ -52,7 +52,7 @@ server {
         if (!-f $document_root$fastcgi_script_name) {
             return 404;
         }
-        fastcgi_pass    unix:/var/run/php/php7.3-%FORMATTED%.sock;
+        fastcgi_pass    unix:/var/run/php/php7.4-%FORMATTED%.sock;
         fastcgi_index   index.php;
         fastcgi_param DOCUMENT_ROOT $document_root;
         include fastcgi_params;
