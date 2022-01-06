@@ -7,14 +7,10 @@ server {
     access_log /var/www/vhost/%TLD%/logs/access.log default;
     error_log /var/www/vhost/%TLD%/logs/error.log;
 
+    include /etc/nginx/includes/letsencrypt.conf;
+
     location / {
         return  301 https://$server_name$request_uri;
-    }
-
-    location ~ /.well-known {
-        default_type "text/plain";
-        root /var/www/letsencrypt;
-        try_files $uri =404;
     }
 }
 
@@ -25,23 +21,21 @@ server {
     limit_conn noconnectionflood 100;
     server_name %SERVERNAME%;
 
-    root /var/www/vhost/%TLD%/%DIRECTORY%;
-    index index.php index.html;
-
-    include /etc/nginx/ssl/ssl.conf;
-
     ssl_certificate /etc/letsencrypt/live/%DOMAIN%/fullchain.pem;
     ssl_certificate_key /etc/letsencrypt/live/%DOMAIN%/privkey.pem;
     ssl_trusted_certificate /etc/letsencrypt/live/%DOMAIN%/fullchain.pem;
 
-    add_header Strict-Transport-Security "max-age=63072000; includeSubDomains; preload";
-    add_header X-Content-Type-Options nosniff;
-    add_header X-XSS-Protection "1; mode=block";
-    add_header X-Frame-Options "SAMEORIGIN";
-    add_header 'Referrer-Policy' 'origin';
-
     access_log /var/www/vhost/%TLD%/logs/ssl-access.log default;
     error_log /var/www/vhost/%TLD%/logs/ssl-error.log;
+
+    include /etc/nginx/includes/general.conf;
+    include /etc/nginx/includes/ssl.conf;
+    include /etc/nginx/includes/security.conf;
+    include /etc/nginx/includes/useragents.conf;
+
+    root /var/www/vhost/%TLD%/%DIRECTORY%;
+    index index.php index.html;
+    client_max_body_size 128m;
 
     location / {
         try_files $uri $uri/ =404;
@@ -55,11 +49,6 @@ server {
         fastcgi_pass    unix:/var/run/php/php7.3-%FORMATTED%.sock;
         fastcgi_index   index.php;
         fastcgi_param DOCUMENT_ROOT $document_root;
-        include fastcgi_params;
+        include /etc/nginx/includes/fastcgi.conf;
     }
-
-    client_max_body_size 128m;
-    if ($http_user_agent = "") { return 429; }
-    if ($http_user_agent ~* "WordPress(.*)") { return 429; }
-    if ($http_user_agent ~* "facebookexternalhit/1.1(.*)") { return 429; }
 }
