@@ -1,6 +1,6 @@
 #!/bin/bash
 
-VER='1.4.2'
+VER='1.4.3'
 PHPVer='7.4'
 _tmp="/tmp/answer.$$"
 TITLE="Website Manager - Nevondo"
