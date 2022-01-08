@@ -2,6 +2,7 @@
 server {
     listen 80;
     listen [::]:80;
+    limit_conn noconnectionflood 100;
     server_name %DOMAIN% www.%DOMAIN%;
 
     access_log /var/www/vhost/%TLD%/logs/access.log default;
