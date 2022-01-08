@@ -1,6 +1,6 @@
 #!/bin/bash
 
-VER='1.4.3'
+VER='1.5.0'
 PHPVer='7.4'
 _tmp="/tmp/answer.$$"
 TITLE="Website Manager - Nevondo"
@@ -183,11 +183,9 @@ function addTld {
     pw=$(head /dev/urandom | tr -dc A-Za-z0-9 | head -c 15 ; echo '')
     useradd www-"$formatted" --home-dir "/var/www/vhost/$domain/" --no-create-home --shell /bin/nologin --password "$pw" --groups www-data
 
-    cp configs/nginx-sites.default /etc/nginx/sites-enabled/"$domain"
-    servername="$domain www.$domain"
+    cp configs/nginx-tld.default /etc/nginx/sites-enabled/"$domain"
     sed -i "s/%TLD%/$domain/g" /etc/nginx/sites-enabled/"$domain"
     sed -i "s/%DOMAIN%/$domain/g" /etc/nginx/sites-enabled/"$domain"
-    sed -i "s/%SERVERNAME%/$servername/g" /etc/nginx/sites-enabled/"$domain"
     sed -i "s/%FORMATTED%/$formatted/g" /etc/nginx/sites-enabled/"$domain"
     sed -i "s/%DIRECTORY%/httpdocs/g" /etc/nginx/sites-enabled/"$domain"
 
@@ -306,10 +304,9 @@ function addSubdomain {
     sed -i "s/%USER%/$formattedTld/g" /etc/php/"$PHPVer"/fpm/pool.d/"$formattedSub".conf
     sed -i "s/%PHPVERSION%/$PHPVer/g" /etc/php/"$PHPVer"/fpm/pool.d/"$formattedSub".conf
 
-    cp configs/nginx-sites.default /etc/nginx/sites-enabled/"$subdomain"
+    cp configs/nginx-subdomain.default /etc/nginx/sites-enabled/"$subdomain"
     sed -i "s/%TLD%/$tld/g" /etc/nginx/sites-enabled/"$subdomain"
     sed -i "s/%DOMAIN%/$subdomain/g" /etc/nginx/sites-enabled/"$subdomain"
-    sed -i "s/%SERVERNAME%/$subdomain/g" /etc/nginx/sites-enabled/"$subdomain"
     sed -i "s/%FORMATTED%/$formattedSub/g" /etc/nginx/sites-enabled/"$subdomain"
     sed -i "s/%DIRECTORY%/$subdomain/g" /etc/nginx/sites-enabled/"$subdomain"
 
