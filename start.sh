@@ -189,7 +189,7 @@ function addTld {
     sed -i "s/%FORMATTED%/$formatted/g" /etc/nginx/sites-enabled/"$domain"
     sed -i "s/%DIRECTORY%/httpdocs/g" /etc/nginx/sites-enabled/"$domain"
 
-    /usr/bin/certbot certonly --webroot -w /var/www/letsencrypt/ -d  "$domain" -d "www.$domain"
+    /usr/local/bin/certbot certonly --webroot -w /var/www/letsencrypt/ -d  "$domain" -d "www.$domain"
 
     service php"$PHPVer"-fpm reload
     service nginx reload
@@ -310,7 +310,7 @@ function addSubdomain {
     sed -i "s/%FORMATTED%/$formattedSub/g" /etc/nginx/sites-enabled/"$subdomain"
     sed -i "s/%DIRECTORY%/$subdomain/g" /etc/nginx/sites-enabled/"$subdomain"
 
-    /usr/bin/certbot certonly --webroot -w /var/www/letsencrypt/ -d  "$subdomain"
+    /usr/local/bin/certbot certonly --webroot -w /var/www/letsencrypt/ -d  "$subdomain"
 
     service php"$PHPVer"-fpm reload
     service nginx reload
@@ -384,7 +384,7 @@ function removeDependencies {
     formattedValue=$(echo "$value" | sed -r 's/\.//g')
     rm /etc/php/"$PHPVer"/fpm/pool.d/"$formattedValue".conf
     rm /etc/nginx/sites-enabled/"$value"
-    /usr/bin/certbot revoke --cert-path "/etc/letsencrypt/archive/$value/cert1.pem"
+    /usr/local/bin/certbot revoke --cert-path "/etc/letsencrypt/archive/$value/cert1.pem"
     rm -rf "/etc/letsencrypt/live/$value"
     rm -rf "/etc/letsencrypt/archive/$value"
     rm "/etc/letsencrypt/renewal/$value.conf"
