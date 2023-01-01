@@ -1,7 +1,7 @@
 #!/bin/bash
 
-VER='1.5.0'
-PHPVer='7.4'
+VER='1.6.0'
+PHPVer='8.1'
 _tmp="/tmp/answer.$$"
 TITLE="Website Manager - Nevondo"
 
