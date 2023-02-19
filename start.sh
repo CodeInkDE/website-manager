@@ -100,6 +100,7 @@ function addPhp {
 
     sed -i '/### PHP START ###/r configs/php.template' /etc/nginx/sites-enabled/"$domain"
     sed -i "s/%PHPVERSION%/$PHPVer/g" /etc/nginx/sites-enabled/"$domain"
+    sed -i "s/%FORMATTED%/$formatted/g" /etc/nginx/sites-enabled/"$domain"
     service php"$PHPVer"-fpm reload
 }
 
@@ -199,6 +200,7 @@ function addTld {
         addTld
         exit 0
     fi
+    clear
 
     if [ -d "/var/www/vhost/$domain/" ]; then
         errorExit "TLD already exits!"
@@ -250,6 +252,7 @@ function deleteTld {
         manageTLD
         exit 0
     fi
+    clear
 
     if [ -z "$domain" ]; then
         errorExit "No parameter!"
@@ -277,7 +280,6 @@ function deleteTld {
     formatted=$(echo "$domain" | sed -r 's/\.//g')
     deluser www-"$formatted"
 
-    clear
     echo "**************************"
     echo "Domain: $domain"
     echo "Status: DELETED"
@@ -347,6 +349,7 @@ function addSubdomain {
         \
         3>&1 1>&2 2>&3 3>&-
     )
+    clear
 
     if [ -z "$subdomain" ]; then
         addSubdomain
@@ -396,6 +399,7 @@ function deleteSubdomain {
         manageTLD
         exit 0
     fi
+    clear
 
     if [ -z "$tld" ]; then
         errorExit "No parameter!"
