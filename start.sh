@@ -182,13 +182,12 @@ function manageTld {
     menuitem=$(cat $_tmp)
     case $menuitem in
     subdomains) subdomain_menu "$website" ;;
-    php) manageTld ;;
     changePW) changePW "www-$formatted" ;;
     php)
-        if $phpStatus == "Enabled"; then
-            removePhp $website
+        if [[ $phpStatus == "Enabled" ]]; then
+            removePhp "$website"
         else
-            addPhp $website $formatted
+            addPhp "$website" "$formatted"
         fi
         manageTld
         ;;
