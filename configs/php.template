@@ -8,4 +8,3 @@
         fastcgi_param DOCUMENT_ROOT $document_root;
         include /etc/nginx/includes/fastcgi.conf;
     }
-    ### PHP END ###

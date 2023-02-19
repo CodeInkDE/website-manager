@@ -62,4 +62,5 @@ server {
     }
 
     ### PHP START ###
+    ### PHP END ###
 }

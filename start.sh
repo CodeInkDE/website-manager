@@ -109,7 +109,8 @@ function removePhp {
     formatted=$(echo "$domain" | sed -r 's/\.//g')
 
     rm /etc/php/"$PHPVer"/fpm/pool.d/"$formatted".conf
-    sed -i '/### PHP START ###/,/### PHP END ###/d' /etc/nginx/sites-enabled/"$domain"
+    sed -i '/### PHP START ###/,/### PHP END ###/{//p;d;}' /etc/nginx/sites-enabled/"$domain"
+    service php"$PHPVer"-fpm reload
 }
 
 ### Menus ###
@@ -164,7 +165,7 @@ function tld_menu {
 
 function manageTld {
     formatted=$(echo "$website" | sed -r 's/\.//g')
-    if grep -Fq "### PHP END ###" /etc/nginx/sites-enabled/"$website"; then
+    if [ -f "/etc/php/"$PHPVer"/fpm/pool.d/"$formatted".conf" ]; then
         phpStatus="Enabled"
     else
         phpStatus="Disabled"
@@ -234,8 +235,6 @@ function addTld {
     sed -i "s/%DOMAIN%/$domain/g" /etc/nginx/sites-enabled/"$domain"
     sed -i "s/%FORMATTED%/$formatted/g" /etc/nginx/sites-enabled/"$domain"
     sed -i "s/%DIRECTORY%/httpdocs/g" /etc/nginx/sites-enabled/"$domain"
-
-    addPhp $domain $formatted
 
     /usr/local/bin/certbot certonly --webroot -w /var/www/letsencrypt/ -d "$domain" -d "www.$domain"
     service nginx reload
@@ -333,16 +332,31 @@ function subdomain_menu {
 function manageSubdomain {
     tld=$1
     subdomain=$2
+    formattedSub=$(echo "$subdomain" | sed -r 's/\.//g')
+
+    if [ -f "/etc/php/"$PHPVer"/fpm/pool.d/"$formattedSub".conf" ]; then
+        phpStatus="Enabled"
+    else
+        phpStatus="Disabled"
+    fi
 
     dialog --backtitle "$TITLE" --title " Manage Subdomain - $tld"\
     --cancel-label "Back" \
     --menu "Move using [UP] [Down], [Enter] to select" 17 60 10\
-    php "$php"\
+    php "PHP [$phpStatus]"\
     delete "Delete subdomain"\
     back "Back" 2>$_tmp
 
     menuitem=$(cat $_tmp)
     case $menuitem in
+    php)
+        if [[ $phpStatus == "Enabled" ]]; then
+            removePhp "$subdomain"
+        else
+            addPhp "$subdomain" "$formattedSub"
+        fi
+        manageSubdomain
+        ;;
     delete) deleteSubdomain "$tld" "$subdomain" ;;
     quit)
         rm $_tmp
@@ -382,8 +396,6 @@ function addSubdomain {
     sed -i "s/%DOMAIN%/$subdomain/g" /etc/nginx/sites-enabled/"$subdomain"
     sed -i "s/%FORMATTED%/$formattedSub/g" /etc/nginx/sites-enabled/"$subdomain"
     sed -i "s/%DIRECTORY%/$subdomain/g" /etc/nginx/sites-enabled/"$subdomain"
-
-    addPhp $subdomain $formattedTld
 
     /usr/local/bin/certbot certonly --webroot -w /var/www/letsencrypt/ -d "$subdomain"
     service nginx reload
