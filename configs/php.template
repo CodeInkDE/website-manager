@@ -1,4 +1,3 @@
-    # PHPEnabled
     location ~ (?U)\.php(/.*$|$) {
         fastcgi_split_path_info ^(.+?\.php)(/.*)$;
         if (!-f $document_root$fastcgi_script_name) {
@@ -9,3 +8,4 @@
         fastcgi_param DOCUMENT_ROOT $document_root;
         include /etc/nginx/includes/fastcgi.conf;
     }
+    ### PHP END ###

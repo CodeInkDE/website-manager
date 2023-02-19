@@ -98,7 +98,7 @@ function addPhp {
     sed -i "s/%USER%/$user/g" /etc/php/"$PHPVer"/fpm/pool.d/"$formatted".conf
     sed -i "s/%PHPVERSION%/$PHPVer/g" /etc/php/"$PHPVer"/fpm/pool.d/"$formatted".conf
 
-    sed '/### PHP ###/r configs/php.template' /etc/nginx/sites-enabled/"$domain"
+    sed -i '/### PHP START ###/r configs/php.template' /etc/nginx/sites-enabled/"$domain"
     sed -i "s/%PHPVERSION%/$PHPVer/g" /etc/nginx/sites-enabled/"$domain"
     service php"$PHPVer"-fpm reload
 }
@@ -108,7 +108,7 @@ function removePhp {
     formatted=$(echo "$domain" | sed -r 's/\.//g')
 
     rm /etc/php/"$PHPVer"/fpm/pool.d/"$formatted".conf
-    sed '/### PHP ###,/### PHP ###/d' /etc/nginx/sites-enabled/"$domain"
+    sed -i '/### PHP START ###,/### PHP END ###/d' /etc/nginx/sites-enabled/"$domain"
 }
 
 ### Menus ###

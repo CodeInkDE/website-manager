@@ -61,6 +61,5 @@ server {
         try_files $uri $uri/ =404;
     }
 
-    ### PHP ###
-    ### PHP ###
+    ### PHP START ###
 }
