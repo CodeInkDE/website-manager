@@ -1,10 +1,10 @@
 #!/bin/bash
 
-echo "Insert domain e.g. codeink.de"
+echo "Insert domain e.g. nevondo.com"
 read basedomain
 
 echo "Extending $basedomain ... "
-echo "Insert subdomain e.g. www.codeink.de"
+echo "Insert subdomain e.g. www.nevondo.com"
 read subdomain
 
 /usr/bin/certbot certonly --expand --webroot -w /var/www/letsencrypt/ -d "$basedomain" -d "$subdomain"
