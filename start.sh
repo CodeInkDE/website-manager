@@ -109,7 +109,7 @@ function removePhp {
     formatted=$(echo "$domain" | sed -r 's/\.//g')
 
     rm /etc/php/"$PHPVer"/fpm/pool.d/"$formatted".conf
-    sed -i '/### PHP START ###,/### PHP END ###/d' /etc/nginx/sites-enabled/"$domain"
+    sed -i '/### PHP START ###/,/### PHP END ###/d' /etc/nginx/sites-enabled/"$domain"
 }
 
 ### Menus ###
@@ -164,12 +164,18 @@ function tld_menu {
 
 function manageTld {
     formatted=$(echo "$website" | sed -r 's/\.//g')
+    if grep -Fq "### PHP END ###" /etc/nginx/sites-enabled/"$website"; then
+        phpStatus="Enabled"
+    else
+        phpStatus="Disabled"
+    fi
 
     dialog --backtitle "$TITLE" --title " Manage TLD - $website"\
     --cancel-label "Back" \
     --menu "Move using [UP] [Down], [Enter] to select" 17 60 10\
     subdomains "Subdomains"\
     changePW "Reset password" \
+    php "PHP [$phpStatus]"\
     delete "Delete"\
     back "Back" 2>$_tmp
 
@@ -178,6 +184,14 @@ function manageTld {
     subdomains) subdomain_menu "$website" ;;
     php) manageTld ;;
     changePW) changePW "www-$formatted" ;;
+    php)
+        if [[ $phpStatus == "Enabled" ]]; then
+            removePhp $website
+        else
+            addPhp $website $formatted
+        fi
+        manageTld
+        ;;
     delete) deleteTld "$website" ;;
     quit)
         rm $_tmp
