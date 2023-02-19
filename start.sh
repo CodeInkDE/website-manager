@@ -1,6 +1,6 @@
 #!/bin/bash
 
-VER='1.6.0'
+VER='1.7.0'
 PHPVer='8.1'
 _tmp="/tmp/answer.$$"
 TITLE="Website Manager - Nevondo"
@@ -130,6 +130,7 @@ function execute_MainMenu {
     manageTLD) tld_menu ;;
     quit)
         rm $_tmp
+        clear
         exit 0
         ;;
     esac
