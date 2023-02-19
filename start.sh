@@ -185,7 +185,7 @@ function manageTld {
     php) manageTld ;;
     changePW) changePW "www-$formatted" ;;
     php)
-        if [[ $phpStatus == "Enabled" ]]; then
+        if $phpStatus == "Enabled"; then
             removePhp $website
         else
             addPhp $website $formatted
