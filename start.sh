@@ -374,7 +374,7 @@ function addSubdomain {
 
     cp configs/index.html "/var/www/vhost/$tld/$subdomain/index.html"
     sed -i "s/%DOMAIN%/$subdomain/g" "/var/www/vhost/$tld/$subdomain/index.html"
-    chown -R www-"$formatted":www-data "/var/www/vhost/$tld/$subdomain/"
+    chown -R www-"$formattedTld":www-data "/var/www/vhost/$tld/$subdomain/"
 
     echo "**************************"
     echo "TLD: $tld"
