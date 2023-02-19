@@ -45,7 +45,7 @@ function installDialog {
     fi
 
     # check for updates
-    git pull
+    git pull --rebase
 }
 
 function checkRoot {
@@ -113,7 +113,8 @@ function removePhp {
 
 ### Menus ###
 function execute_MainMenu {
-    dialog --backtitle "$TITLE" --title " Main Menu - v$VER"\
+    hash=$(git rev-parse --short HEAD 2>&1)
+    dialog --backtitle "$TITLE" --title " Main Menu - v$VER ($hash)"\
     --cancel-label "Quit" \
     --menu "Move using [UP] [Down], [Enter] to select" 17 60 10\
     manageTLD "Manage TLDs"\
