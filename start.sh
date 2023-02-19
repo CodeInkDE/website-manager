@@ -262,7 +262,7 @@ function deleteTld {
     response=$?
 
     if [ $response = 1 ]; then
-        manageTLD
+        manageTld
         exit 0
     fi
     clear
