@@ -61,14 +61,6 @@ server {
         try_files $uri $uri/ =404;
     }
 
-    location ~ (?U)\.php(/.*$|$) {
-        fastcgi_split_path_info ^(.+?\.php)(/.*)$;
-        if (!-f $document_root$fastcgi_script_name) {
-            return 404;
-        }
-        fastcgi_pass    unix:/var/run/php/php7.4-%FORMATTED%.sock;
-        fastcgi_index   index.php;
-        fastcgi_param DOCUMENT_ROOT $document_root;
-        include /etc/nginx/includes/fastcgi.conf;
-    }
+    ### PHP START ###
+    ### PHP END ###
 }
